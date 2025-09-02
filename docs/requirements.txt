@@ -1,0 +1,14 @@
+# Documentation build requirements
+sphinx>=5.0.0
+sphinx_rtd_theme>=1.0.0
+myst-parser>=0.18.0
+
+# For autodoc generation
+sphinx-autodoc-typehints>=1.19.0
+
+# Additional Sphinx extensions
+sphinx-copybutton>=0.5.0
+sphinx-tabs>=3.4.0
+
+# For parsing project dependencies
+packaging>=21.0

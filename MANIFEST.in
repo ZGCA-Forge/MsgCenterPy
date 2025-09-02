@@ -1,0 +1,6 @@
+# Include important project files
+include LICENSE
+include README.md
+
+# Include all msgcenterpy source files
+recursive-include msgcenterpy *

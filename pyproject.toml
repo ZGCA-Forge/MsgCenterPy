@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "msgcenterpy"
+dynamic = ["version"]
+description = "Unified message conversion system supporting ROS2, Pydantic, Dataclass, JSON, YAML, Dict, and MCP schema inter-conversion"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+    {name = "MsgCenterPy Team", email = "zgca@zgca.com"}
+]
+keywords = ["message", "conversion", "ros2", "pydantic", "dataclass", "json", "yaml", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Distributed Computing",
+    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator"
+]
+
+dependencies = [
+    "pydantic>=2.0.0",
+    "jsonschema>=4.25",
+    "PyYAML>=6.0",
+    "typing-extensions>=4.0.0; python_version<'3.11'"
+]
+
+[project.optional-dependencies]
+ros2 = [
+    "rosidl_runtime_py>=0.9.0",
+    "rclpy>=3.0.0"
+]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+    "types-jsonschema>=4.0.0",
+    "types-PyYAML>=6.0.0",
+    "pre-commit>=2.20.0",
+    "bump2version>=1.0.0"
+]
+docs = [
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "myst-parser>=0.18.0"
+]
+all = [
+    "msgcenterpy[ros2,dev,docs]"
+]
+
+[project.urls]
+Homepage = "https://github.com/ZGCA-Forge/MsgCenterPy"
+Documentation = "https://zgca-forge.github.io/MsgCenterPy/"
+Repository = "https://github.com/ZGCA-Forge/MsgCenterPy"
+Issues = "https://github.com/ZGCA-Forge/MsgCenterPy/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["msgcenterpy*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "msgcenterpy.__version__"}
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.10"
+plugins = ["pydantic.mypy"]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short --strict-markers --strict-config -ra --color=yes"
+
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning"
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "build", "dist"]
+skips = ["B101", "B601"]
