@@ -169,12 +169,30 @@ jobs:
       - name: Verify version consistency
         if: github.event_name == 'release'
         run: |
-          VERSION=$(python -c "import msgcenterpy; print(msgcenterpy.__version__)" 2>/dev/null || echo "unknown")
-          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          # Install package first
+          pip install -e .
+
+          # Get package version (fail fast if not available)
+          VERSION=$(python -c "import msgcenterpy; print(msgcenterpy.__version__)")
+
+          # Handle both v0.0.3 and 0.0.3 tag formats
+          RAW_TAG="${GITHUB_REF#refs/tags/}"
+          if [[ "$RAW_TAG" == v* ]]; then
+            TAG_VERSION="${RAW_TAG#v}"
+          else
+            TAG_VERSION="$RAW_TAG"
+          fi
+
+          echo "Package version: $VERSION"
+          echo "Tag version: $TAG_VERSION"
+
           if [ "$VERSION" != "$TAG_VERSION" ]; then
-            echo "Version mismatch: package=$VERSION, tag=$TAG_VERSION"
+            echo "❌ Version mismatch: package=$VERSION, tag=$TAG_VERSION"
+            echo "Please ensure the package version matches the git tag"
             exit 1
           fi
+
+          echo "✅ Version verification passed: $VERSION"
 
       - name: Build release distributions
         run: |
