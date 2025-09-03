@@ -5,7 +5,7 @@ A multi-format message conversion system supporting seamless conversion
 between ROS2, Pydantic, Dataclass, JSON, Dict, YAML and JSON Schema.
 """
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __license__ = "Apache-2.0"
 
 from msgcenterpy.core.envelope import MessageEnvelope, create_envelope
