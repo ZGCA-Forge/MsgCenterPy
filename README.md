@@ -4,6 +4,7 @@
 
 [![PyPI version](https://badge.fury.io/py/msgcenterpy.svg)](https://badge.fury.io/py/msgcenterpy)
 [![Python versions](https://img.shields.io/pypi/pyversions/msgcenterpy.svg)](https://pypi.org/project/msgcenterpy/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/msgcenterpy.svg)](https://pypi.org/project/msgcenterpy/)
 [![Build Status](https://github.com/ZGCA-Forge/MsgCenterPy/actions/workflows/ci.yml/badge.svg)](https://github.com/ZGCA-Forge/MsgCenterPy/actions)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-brightgreen)](https://zgca-forge.github.io/MsgCenterPy/)
 
@@ -59,7 +60,25 @@ Please visit: [https://zgca-forge.github.io/MsgCenterPy/](https://zgca-forge.git
 
 ## Development
 
-### Development Environment Setup
+### Quick Development Setup
+
+For **Linux/macOS**:
+
+```bash
+git clone https://github.com/ZGCA-Forge/MsgCenterPy.git
+cd MsgCenterPy
+./scripts/setup-dev.sh
+```
+
+For **Windows**:
+
+```powershell
+git clone https://github.com/ZGCA-Forge/MsgCenterPy.git
+cd MsgCenterPy
+.\scripts\setup-dev.ps1
+```
+
+### Manual Development Setup
 
 ```bash
 git clone https://github.com/ZGCA-Forge/MsgCenterPy.git
@@ -69,6 +88,10 @@ pre-commit install
 ```
 
 For API documentation, please refer to Quick Start
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ZGCA-Forge/MsgCenterPy&type=Date)](https://star-history.com/#ZGCA-Forge/MsgCenterPy&Date)
 
 ## License
 
