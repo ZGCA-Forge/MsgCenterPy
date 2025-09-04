@@ -13,36 +13,39 @@ Welcome to MsgCenterPy's Documentation!
    :target: https://pypi.org/project/msgcenterpy/
    :alt: Python versions
 
-MsgCenterPy is a unified message conversion system based on unified instance manager architecture,
+MsgCenterPy is a multi-format message conversion system based on a unified instance manager architecture,
 supporting seamless conversion between **ROS2**, **Pydantic**, **Dataclass**, **JSON**, **Dict**,
 **YAML** and **JSON Schema**.
 
-✨ Key Features
+📦 Installation
 ---------------
 
-🔄 **Unified Conversion**: Supports bidirectional conversion between multiple message formats
-
-🤖 **ROS2 Integration**: Complete support for ROS2 message types and constraints
-
-📊 **JSON Schema**: Automatic generation and validation of JSON Schema
-
-🏗️ **Type Safety**: Strong type constraint system based on TypeInfo
-
-🔍 **Field Access**: Unified field accessor interface
-
-⚡ **High Performance**: Optimized conversion algorithms and caching mechanism
-
-🧪 **Complete Testing**: 47+ test cases with >90% coverage
-
-📦 Quick Start
---------------
-
-Installation
-~~~~~~~~~~~~
+Basic Installation
+~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
    pip install msgcenterpy
+
+With Optional Dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   # Install ROS2 support
+   conda install ros-humble-ros-core ros-humble-std-msgs ros-humble-geometry-msgs -c robostack-staging
+
+From Source
+~~~~~~~~~~~
+
+.. code-block:: bash
+
+   git clone https://github.com/ZGCA-Forge/MsgCenterPy.git
+   cd MsgCenterPy
+   pip install -e .[dev]
+
+🚀 Quick Start
+--------------
 
 Basic Usage
 ~~~~~~~~~~~
@@ -86,33 +89,41 @@ Basic Usage
      - ✅
      - ✅
    * - Pydantic
-     - 开发中
-     - 开发中
-     - 开发中
-     - 开发中
+     - 🚧
+     - 🚧
+     - 🚧
+     - 🚧
    * - Dataclass
-     - 开发中
-     - 开发中
-     - 开发中
-     - 开发中
+     - 🚧
+     - 🚧
+     - 🚧
+     - 🚧
    * - JSON
-     - 开发中
-     - 开发中
-     - ✅
-     - ⚡
+     - 🚧
+     - 🚧
+     - 🚧
+     - 🚧
    * - Dict
-     - 开发中
-     - 开发中
-     - ✅
-     - ⚡
+     - 🚧
+     - 🚧
+     - 🚧
+     - 🚧
    * - YAML
-     - 开发中
-     - 开发中
-     - ✅
-     - ⚡
+     - 🚧
+     - 🚧
+     - 🚧
+     - 🚧
 
 .. note::
-   ✅ Fully Supported | 开发中 In Development | ⚡ Basic Support
+   ✅ Fully Supported | 🚧 In Development
+
+🛠️ Development
+--------------
+
+Development Environment Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For detailed development guidelines, please refer to the Development section.
 
 📚 Documentation Contents
 -------------------------
@@ -122,7 +133,6 @@ Basic Usage
    :caption: User Guide
 
    installation
-   quickstart
    user_guide/index
 
 .. toctree::
@@ -168,9 +178,3 @@ Indices and Tables
 
 - 📖 **Documentation**: https://zgca-forge.github.io/MsgCenterPy/
 - 🐛 **Issues**: https://github.com/ZGCA-Forge/MsgCenterPy/issues
-- 💬 **Discussions**: https://github.com/ZGCA-Forge/MsgCenterPy/discussions
-
-📄 License
-==========
-
-This project is licensed under the Apache-2.0 License - see the `LICENSE <https://github.com/ZGCA-Forge/MsgCenterPy/blob/main/LICENSE>`_ file for details.
