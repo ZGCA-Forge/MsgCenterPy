@@ -48,6 +48,9 @@ docs/_static/
 
 # Visual Studio Code
 .vscode/
+.cursor/
+.cursorignore
+pyrightconfig.json
 
 # ================================
 # Operating System files
