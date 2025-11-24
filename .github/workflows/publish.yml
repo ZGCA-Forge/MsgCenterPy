@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -53,7 +53,7 @@ jobs:
     needs: [code-format] # Only run after code formatting passes
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
@@ -85,7 +85,7 @@ jobs:
     needs: [basic-build] # Only run after basic build passes
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
@@ -125,7 +125,7 @@ jobs:
     needs: [basic-build] # Run in parallel with ROS2 test after basic build
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run Safety CLI to check for vulnerabilities
         uses: pyupio/safety-action@v1
@@ -148,7 +148,7 @@ jobs:
     needs: [test-with-ros2]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -279,7 +279,7 @@ jobs:
     if: always() && (needs.pypi-publish.result == 'success' || needs.test-pypi-publish.result == 'success')
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Create deployment summary
         run: |
