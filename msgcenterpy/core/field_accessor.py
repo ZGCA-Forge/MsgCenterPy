@@ -358,14 +358,14 @@ class TypeInfoProvider(ABC):
 
     @abstractmethod
     def get_field_type_info(
-        self, field_name: str, field_value: Any, field_accessor: "FieldAccessor"
+        self, field_name: str, field_value: Any, parent_field_accessor: "FieldAccessor"
     ) -> Optional[TypeInfo]:
         """获取指定字段的类型信息
 
         Args:
             field_name: 字段名，简单字段名如 'field'
             field_value: 字段的当前值，用于动态类型推断，不能为None
-            field_accessor: 字段访问器，提供额外的上下文信息，不能为None
+            parent_field_accessor: 父字段访问器，提供额外的上下文信息，不能为None
 
         Returns:
             字段的TypeInfo，如果字段不存在则返回None

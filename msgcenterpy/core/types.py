@@ -11,6 +11,7 @@ class MessageType(Enum):
     JSON_SCHEMA = "json_schema"
     DICT = "dict"
     YAML = "yaml"
+    TYPED_DICT = "typed_dict"  # Experimental
 
 
 class ConversionError(Exception):

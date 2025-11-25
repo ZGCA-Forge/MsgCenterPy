@@ -9,6 +9,8 @@ class Properties(TypedDict, total=False):
     ros_msg_cls_path: str
     ros_msg_cls_namespace: str
     json_schema: Dict[str, Any]
+    typed_dict_class_module: str
+    typed_dict_class_name: str
 
 
 class FormatMetadata(TypedDict, total=False):
