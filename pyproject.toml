@@ -40,13 +40,17 @@ ros2 = [
 ]
 dev = [
     "pytest>=7.0.0",
-    "black>=22.0.0",
-    "isort>=5.0.0",
-    "mypy>=1.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.13.0",
+    "flake8>=7.0.0",
+    "Flake8-pyproject>=1.2.0",
+    "mypy>=1.8.0",
     "types-jsonschema>=4.0.0",
     "types-PyYAML>=6.0.0",
-    "pre-commit>=2.20.0",
-    "bump2version>=1.0.0"
+    "bandit[toml]>=1.7.0",
+    "pre-commit>=3.5.0",
+    "bump-my-version>=0.28.0",
 ]
 docs = [
     "sphinx>=5.0.0",
@@ -70,13 +74,25 @@ include = ["msgcenterpy*"]
 [tool.setuptools.dynamic]
 version = {attr = "msgcenterpy.__version__"}
 
+# ── Formatting ────────────────────────────────────────────────
+
 [tool.black]
 line-length = 120
-target-version = ['py310', 'py311', 'py312']
+target-version = ["py310", "py311", "py312"]
 
 [tool.isort]
 profile = "black"
+line_length = 120
 multi_line_output = 3
+
+# ── Linting ───────────────────────────────────────────────────
+
+[tool.flake8]
+max-line-length = 200
+extend-ignore = ["E203", "W503", "W291", "W293", "W391", "F401", "E402", "E721", "F841", "F541"]
+exclude = ["build", "dist", "__pycache__", ".mypy_cache", ".pytest_cache", "htmlcov", ".vscode", "docs/_build", "msgcenterpy.egg-info"]
+
+# ── Type checking ─────────────────────────────────────────────
 
 [tool.mypy]
 python_version = "3.10"
@@ -86,8 +102,11 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 no_implicit_optional = true
 warn_redundant_casts = true
-warn_unused_ignores = true
+warn_unused_ignores = false
 strict_equality = true
+ignore_missing_imports = true
+
+# ── Testing ───────────────────────────────────────────────────
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -95,12 +114,32 @@ python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
 addopts = "-v --tb=short --strict-markers --strict-config -ra --color=yes"
-
 filterwarnings = [
     "ignore::DeprecationWarning",
-    "ignore::PendingDeprecationWarning"
+    "ignore::PendingDeprecationWarning",
 ]
+
+# ── Security ──────────────────────────────────────────────────
 
 [tool.bandit]
 exclude_dirs = ["tests", "build", "dist"]
 skips = ["B101", "B601"]
+
+# ── Version management ────────────────────────────────────────
+
+[tool.bumpversion]
+current_version = "0.1.5"
+commit = true
+tag = true
+tag_name = "v{new_version}"
+message = "release: bump version {current_version} → {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'current_version = "{current_version}"'
+replace = 'current_version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "msgcenterpy/__init__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'

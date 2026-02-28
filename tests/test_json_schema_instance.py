@@ -432,6 +432,159 @@ class TestJSONSchemaValidation:
         assert len(invalid_instance._validation_errors) > 0
 
 
+class TestGenerateDefaultFromSchema:
+    """generate_default_from_schema 默认值生成测试"""
+
+    def test_basic_types(self):
+        """测试基础类型的零值生成"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "s": {"type": "string"},
+                "i": {"type": "integer"},
+                "n": {"type": "number"},
+                "b": {"type": "boolean"},
+                "null_field": {"type": "null"},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"s": "", "i": 0, "n": 0.0, "b": False, "null_field": None}
+
+    def test_explicit_default_takes_priority(self):
+        """测试显式 default 优先于类型零值"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "default": "anonymous"},
+                "age": {"type": "integer", "default": 18},
+                "score": {"type": "number", "default": 99.5},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"name": "anonymous", "age": 18, "score": 99.5}
+
+    def test_enum_uses_first_value(self):
+        """测试枚举类型使用第一个枚举值"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "status": {"type": "string", "enum": ["active", "inactive", "pending"]},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"status": "active"}
+
+    def test_const_value(self):
+        """测试 const 关键字"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "version": {"type": "string", "const": "v2"},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"version": "v2"}
+
+    def test_array_type(self):
+        """测试数组类型返回空列表"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "tags": {"type": "array", "items": {"type": "string"}},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"tags": []}
+
+    def test_nested_object(self):
+        """测试嵌套对象递归生成"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "address": {
+                            "type": "object",
+                            "properties": {
+                                "city": {"type": "string"},
+                                "zip": {"type": "integer"},
+                            },
+                        },
+                    },
+                },
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {
+            "user": {
+                "name": "",
+                "address": {"city": "", "zip": 0},
+            }
+        }
+
+    def test_union_type(self):
+        """测试联合类型取第一个非 null 类型"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "nullable_str": {"type": ["string", "null"]},
+                "nullable_int": {"type": ["null", "integer"]},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"nullable_str": "", "nullable_int": 0}
+
+    def test_no_type_field(self):
+        """测试缺少 type 定义时返回 None"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "unknown": {"description": "no type defined"},
+            },
+        }
+        result = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+
+        assert result == {"unknown": None}
+
+    def test_empty_schema(self):
+        """测试空 schema 返回空字典"""
+        result = JSONSchemaMessageInstance.generate_default_from_schema({})
+        assert result == {}
+
+        result2 = JSONSchemaMessageInstance.generate_default_from_schema({"type": "object"})
+        assert result2 == {}
+
+    def test_generated_default_creates_valid_instance(self):
+        """测试生成的默认值可以直接创建有效的实例"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "count": {"type": "integer"},
+                "active": {"type": "boolean"},
+                "items": {"type": "array", "items": {"type": "string"}},
+                "meta": {
+                    "type": "object",
+                    "properties": {"version": {"type": "integer"}},
+                },
+            },
+        }
+        defaults = JSONSchemaMessageInstance.generate_default_from_schema(schema)
+        instance = JSONSchemaMessageInstance(defaults, schema)
+
+        assert len(instance._validation_errors) == 0
+        assert instance.get_python_dict() == defaults
+
+
 # 运行测试的便捷函数
 def run_json_schema_tests():
     """运行 JSON Schema 相关测试"""

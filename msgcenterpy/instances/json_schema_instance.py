@@ -19,6 +19,87 @@ class JSONSchemaMessageInstance(MessageInstance[Dict[str, Any]]):
     _json_schema: Dict[str, Any] = dict()
     _json_data: Dict[str, Any] = dict()
 
+    _JSON_TYPE_DEFAULTS: Dict[str, Any] = {
+        "string": "",
+        "integer": 0,
+        "number": 0.0,
+        "boolean": False,
+        "null": None,
+    }
+
+    @classmethod
+    def generate_default_from_schema(cls, schema: Dict[str, Any]) -> Dict[str, Any]:
+        """根据JSON Schema生成包含所有字段默认值的数据字典
+
+        优先使用schema中显式声明的default，否则根据类型生成零值。
+        支持嵌套object递归生成。
+
+        Args:
+            schema: JSON Schema定义（根schema或子object schema）
+
+        Returns:
+            包含所有字段默认值的数据字典
+
+        Examples:
+            >>> schema = {
+            ...     "type": "object",
+            ...     "properties": {
+            ...         "name": {"type": "string"},
+            ...         "age": {"type": "integer", "default": 18},
+            ...         "active": {"type": "boolean"},
+            ...     }
+            ... }
+            >>> JSONSchemaMessageInstance.generate_default_from_schema(schema)
+            {'name': '', 'age': 18, 'active': False}
+        """
+        properties = schema.get("properties", {})
+        result: Dict[str, Any] = {}
+
+        for field_name, field_schema in properties.items():
+            if isinstance(field_schema, dict):
+                result[field_name] = cls._generate_field_default(field_schema)
+
+        return result
+
+    @classmethod
+    def _generate_field_default(cls, field_schema: Dict[str, Any]) -> Any:
+        """根据单个字段的schema生成默认值
+
+        Args:
+            field_schema: 字段的JSON Schema定义
+
+        Returns:
+            字段的默认值
+        """
+        if "default" in field_schema:
+            return field_schema["default"]
+
+        if "const" in field_schema:
+            return field_schema["const"]
+
+        if "enum" in field_schema:
+            enum_values = field_schema["enum"]
+            if enum_values:
+                return enum_values[0]
+
+        json_type = field_schema.get("type")
+
+        if json_type is None:
+            return None
+
+        # 联合类型取第一个非null类型
+        if isinstance(json_type, list):
+            non_null = [t for t in json_type if t != "null"]
+            json_type = non_null[0] if non_null else "null"
+
+        if json_type == "object":
+            return cls.generate_default_from_schema(field_schema)
+
+        if json_type == "array":
+            return []
+
+        return cls._JSON_TYPE_DEFAULTS.get(json_type)
+
     def __init__(self, inner_data: Dict[str, Any], schema: Dict[str, Any], **kwargs: Any) -> None:
         """
         初始化JSON Schema消息实例

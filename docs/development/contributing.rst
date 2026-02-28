@@ -88,18 +88,18 @@ Testing
 Version Management
 ------------------
 
-This project uses `bump2version` for version management. It's automatically installed with dev dependencies.
+This project uses `bump-my-version <https://github.com/callowayproject/bump-my-version>`_ for version management. It's automatically installed with dev dependencies. Configuration lives in ``pyproject.toml`` under ``[tool.bumpversion]``.
 
 .. code-block:: bash
 
    # Bug fixes (0.0.1 → 0.0.2)
-   bump2version patch
+   bump-my-version bump patch
 
    # New features (0.0.2 → 0.1.0)
-   bump2version minor
+   bump-my-version bump minor
 
    # Breaking changes (0.1.0 → 1.0.0)
-   bump2version major
+   bump-my-version bump major
 
 After bumping version, push changes and tags:
 
