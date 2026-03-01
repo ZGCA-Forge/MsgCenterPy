@@ -128,7 +128,7 @@ skips = ["B101", "B601"]
 # ── Version management ────────────────────────────────────────
 
 [tool.bumpversion]
-current_version = "0.1.6"
+current_version = "0.1.7"
 commit = true
 tag = true
 push = true
