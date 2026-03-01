@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10" # Use minimum version for consistency
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
@@ -33,27 +33,27 @@ jobs:
         with:
           extra_args: --all-files
 
-  # Step 2: Basic build and test with minimum Python version (3.10)
+  # Step 2: Basic build and test
   basic-build:
-    name: Basic build (Python 3.10, Ubuntu)
+    name: Basic build (Python 3.11, Ubuntu)
     runs-on: ubuntu-latest
     needs: [code-format] # Only run after code formatting passes
 
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Cache pip dependencies
         uses: actions/cache@v5
         with:
           path: ~/.cache/pip
-          key: ubuntu-pip-3.10-${{ hashFiles('**/pyproject.toml') }}
+          key: ubuntu-pip-3.11-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
-            ubuntu-pip-3.10-
+            ubuntu-pip-3.11-
 
       - name: Install dependencies
         run: |
@@ -173,7 +173,7 @@ jobs:
         exclude:
           # Skip the combination we already tested in basic-build
           - os: ubuntu-latest
-            python-version: "3.10"
+            python-version: "3.11"
 
     steps:
       - uses: actions/checkout@v6

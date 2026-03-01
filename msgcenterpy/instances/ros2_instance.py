@@ -40,11 +40,7 @@ class ROS2MessageInstance(MessageInstance[Any]):
         interface = (
             "msg"
             if ".msg" in module_name
-            else "srv"
-            if ".srv" in module_name
-            else "action"
-            if ".action" in module_name
-            else "msg"
+            else "srv" if ".srv" in module_name else "action" if ".action" in module_name else "msg"
         )
         return f"{package}/{interface}/{class_name}" if package and class_name else f"{module_name}.{class_name}"
 

@@ -131,6 +131,7 @@ skips = ["B101", "B601"]
 current_version = "0.1.6"
 commit = true
 tag = true
+push = true
 tag_name = "v{new_version}"
 message = "release: bump version {current_version} → {new_version}"
 
