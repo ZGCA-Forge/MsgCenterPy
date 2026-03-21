@@ -277,9 +277,16 @@ class TypeInfo:
         # Special handling for object types
         if self.is_object and self.object_fields:
             properties = {}
+            required_fields = []
             for field_name, field_info in self.object_fields.items():
                 properties[field_name] = field_info.to_json_schema_property(include_constraints)
+                if field_info.has_constraint(ConstraintType.REQUIRED):
+                    required_fields.append(field_name)
             property_schema["properties"] = properties
+            if required_fields:
+                property_schema["required"] = required_fields
+            if self.field_name and self.field_name != Consts.ELEMENT_TYPE_INFO_SYMBOL:
+                property_schema["title"] = self.field_name
 
         # Add description
         if self.original_type:

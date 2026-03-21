@@ -1,7 +1,10 @@
 import array
 import importlib
+import logging
 from collections import OrderedDict
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type
+
+logger = logging.getLogger(__name__)
 
 from rosidl_parser.definition import NamespacedType  # type: ignore
 from rosidl_runtime_py import (  # type: ignore
@@ -217,10 +220,9 @@ class ROS2MessageInstance(MessageInstance[Any]):
             # 基础类型的约束将在 field_accessor 中自动添加
             pass
         elif isinstance(definition_type, NamespacedType):
-            # 对象类型，标记为对象并提取字段信息
             type_info.is_object = True
             type_info.add_constraint(ConstraintType.TYPE_KEEP, True)
-            # 这里可以进一步扩展来提取对象字段信息
+            self._extract_namespaced_type_fields(type_info, definition_type)
         # 提取元素类型信息
         if get_element_type:
             if not isinstance(definition_type, AbstractNestedType):
@@ -236,3 +238,39 @@ class ROS2MessageInstance(MessageInstance[Any]):
                 original_type=definition_type.value_type,
             )
             self._extract_from_rosidl_definition(type_info.element_type_info)
+
+    def _extract_namespaced_type_fields(self, type_info: TypeInfo, namespaced_type: "NamespacedType") -> None:
+        """从 NamespacedType（嵌套 ROS2 消息）中提取所有字段信息，填充 object_fields
+
+        递归处理嵌套的消息类型，确保多层嵌套的结构也能正确提取。
+
+        Args:
+            type_info: 要填充 object_fields 的 TypeInfo 对象
+            namespaced_type: rosidl NamespacedType 定义
+        """
+        from msgcenterpy.core.type_info import TypeInfoPostProcessor
+
+        try:
+            msg_cls = import_message_from_namespaced_type(namespaced_type)
+            msg_instance = msg_cls()
+
+            # noinspection PyProtectedMember
+            slots = msg_instance._fields_and_field_types
+            slot_types = msg_instance.SLOT_TYPES
+
+            for field_name, slot_type in zip(slots, slot_types):
+                std_type = TypeConverter.rosidl_definition_to_standard(slot_type)
+                python_type = TypeConverter.standard_to_python_type(std_type)
+                field_type_info = TypeInfo(
+                    field_name=field_name,
+                    field_path=f"{type_info.field_path}.{field_name}",
+                    standard_type=std_type,
+                    python_type=python_type,
+                    original_type=slot_type,
+                )
+                self._extract_from_rosidl_definition(field_type_info)
+                TypeInfoPostProcessor.post_process_type_info(field_type_info)
+                field_type_info.add_constraint(ConstraintType.REQUIRED, True)
+                type_info.object_fields[field_name] = field_type_info
+        except Exception as e:
+            logger.warning("Failed to extract fields from NamespacedType %s: %s", namespaced_type, e)
