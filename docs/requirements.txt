@@ -4,7 +4,7 @@ sphinx_rtd_theme>=1.0.0
 myst-parser>=0.18.0
 
 # For autodoc generation
-sphinx-autodoc-typehints>=1.19.0
+sphinx-autodoc-typehints>=3.0.1
 
 # Additional Sphinx extensions
 sphinx-copybutton>=0.5.0
